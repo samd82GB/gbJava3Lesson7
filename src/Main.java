@@ -15,23 +15,20 @@ public class Main {
 
     public static void start(Class testClass) throws InstantiationException, IllegalAccessException, NullPointerException, InvocationTargetException {
 
-        //создаём объект класса для запуска тестов
-
+//создаём объект класса для запуска тестов
         TestClass doTests = (TestClass) testClass.newInstance();
-
-
-        //проверка класса на наличие методов с аннотациями До и После
+//создаём массив методов из класса testClass
         Method[] methods = testClass.getDeclaredMethods();
-        
+//создаём лист методов для дальнейшей сортировки
         List<Method> methodList = new ArrayList<>();
 
-
+//проверка класса на наличие методов с аннотациями До и После
         int countsBefore = 0;
         int countsAfter = 0;
         for (Method method : methods) {
             if (method.getDeclaredAnnotation(BeforeSuite.class) != null) {
                 countsBefore++;
-                method.invoke(doTests);
+
             }
             if (method.getDeclaredAnnotation(AfterSuite.class) != null) {
                 countsAfter++;
@@ -42,14 +39,24 @@ public class Main {
         } else if (countsBefore == 0) {
             throw new RuntimeException("Отсутсвует метод ДО");
         }
+
         if (countsAfter > 1) {
             throw new RuntimeException("Более одного метода ПОСЛЕ");
         } else if (countsAfter == 0) {
             throw new RuntimeException("Отсутсвует метод ПОСЛЕ");
         }
+//запускаем метод с аннотацией @BeforeSuite
+        for (Method method : methods) {
+            if (method.getDeclaredAnnotation(BeforeSuite.class) != null) {
+                System.out.println("Имя метода ДО: " +method.getName());
+                method.invoke(doTests);
+                System.out.println("___________________________________");
+            }
+        }
+
 
 //заполняем лист методов только теми методами, которые имеют аннотацию Test
-        for (int i = 0; i<methods.length;i++) {
+        for (int i = 0; i < methods.length; i++) {
             if (methods[i].getDeclaredAnnotation(Test.class) != null) {
                 methodList.add(methods[i]);
             }
@@ -65,20 +72,25 @@ public class Main {
                 }
             }
         }
-   //запускаем методы с аннотацией Test по их приоритету
+        //запускаем методы с аннотацией Test по их приоритету
         for (Method method : methodList) {
+            System.out.println("Имя метода к выполнению: " +method.getName());
             method.invoke(doTests);
+            System.out.println("___________________________________");
         }
 
-        //сначала запускаем метод ДО, если он есть
+        //сначала запускаем метод ПОСЛЕ, если он есть
 
-        doTests.beforeSuiteMethod();
+        for (Method method : methods) {
+            if (method.getDeclaredAnnotation(AfterSuite.class) != null) {
+                System.out.println("Имя метода ПОСЛЕ: " +method.getName());
+                method.invoke(doTests);
+                System.out.println("___________________________________");
+
+            }
+        }
 
 
-        // запускаем метод ПОСЛЕ
-
-        doTests.afterSuiteMethod();
     }
 }
-
 

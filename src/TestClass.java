@@ -5,7 +5,7 @@ public class TestClass {
 
     @BeforeSuite
     public void beforeSuiteMethod () {
-        System.out.println("Выполняем метод перед тестами!");
+        System.out.println("Выполняем метод ДО, с аннотацией @BeforeSuite!");
     }
 
     @Test (priority = 1)
@@ -14,12 +14,12 @@ public class TestClass {
     }
     @Test (priority = 2)
     public void test21 () {
-        System.out.println("Выполняем тест с приоритетом 2_1");
+        System.out.println("Выполняем тест с приоритетом 2");
     }
 
     @Test (priority = 2)
     public void test22 () {
-        System.out.println("Выполняем тест с приоритетом 2_2");
+        System.out.println("Выполняем тест с приоритетом 2");
     }
 
     @Test (priority = 3)
@@ -38,7 +38,7 @@ public class TestClass {
 
     @AfterSuite
     public void afterSuiteMethod () {
-        System.out.println("Выполняем метод после всех тестов!");
+        System.out.println("Выполняем метод ПОСЛЕ, с аннотацией @AfterSuite!");
     }
 
 
